@@ -1,0 +1,67 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "EXECUTAR",
+			"program": "${command:AskForProgramName}",
+			"cwb": "${workspaceFolder}",
+			"smartclientBin": "C:\\TOTVS\\Protheus\\SmartClient\\smartclient.exe",
+			"enableMultiThread": true,
+			"enableProfile": false,
+			"isMultiSession": true,
+			"isAccessibilityMode": false,
+			"doNotShowSplash": true,
+			"language": "",
+			"ignoreFiles": true
+		}
+	],
+	"lastProgramExecuted": "SIGAESP",
+	"lastPrograms": [
+		{
+			"args": [
+				"-"
+			],
+			"label": "u",
+			"description": "-"
+		},
+		{
+			"args": [],
+			"label": "u_DuckTool",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "SIGAESP",
+			"description": ""
+		},
+		{
+			"args": [
+				"]"
+			],
+			"label": "U_DUCKTOOL",
+			"description": "]"
+		},
+		{
+			"args": [],
+			"label": "U_TST",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "U_TSTSQL",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "SIGACFG",
+			"description": ""
+		},
+		{
+			"args": [],
+			"label": "SIGAMDI",
+			"description": ""
+		}
+	]
+}

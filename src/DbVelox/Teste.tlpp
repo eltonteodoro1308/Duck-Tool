@@ -1,0 +1,25 @@
+#Include 'Totvs.Ch'
+
+NameSpace DbVelox
+
+user function Teste()
+
+	Local oTable1 := Nil
+	Local oTable2 := Nil
+	Local oTable3 := Nil
+	Local oTable4 := Nil
+	Local oTable5 := Nil
+	Local oTable6 := Nil
+
+	RpcSetEnv( '99', '01' )
+
+	oTable1 := DbVelox.Table():New(            )
+	oTable2 := DbVelox.Table():New( .T.        )   
+	oTable3 := DbVelox.Table():New( .F.        )
+	oTable4 := DbVelox.Table():New(    , 'SA1' )
+	oTable5 := DbVelox.Table():New( .T., 'SA1' )
+	oTable6 := DbVelox.Table():New( .F., 'SA1' )
+
+	RpcClearEnv()
+
+return

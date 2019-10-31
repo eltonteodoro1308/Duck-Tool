@@ -1,0 +1,27 @@
+#Include 'Totvs.Ch'
+
+NameSpace DbVelox
+
+Class Table
+
+	Private Data cTableName As Caracter
+
+	Public Method New()
+
+EndClass
+
+Method New( lSetWorkArea, cTableName ) Class Table
+
+	Default lSetWorkArea := .F.
+
+	If lSetWorkArea .And. Empty( cTableName )
+
+		Self:cTableName := Alias()
+
+	Else
+
+		Self:cTableName := If( cTableName == Nil, '', cTableName )
+
+	End If
+
+Return Self
