@@ -2,48 +2,74 @@
 
 User Function DkQuery()
 
-	Local oDlg := GetDialog()
+	Private oDialog   := Nil
+	Private oMultiGet := Nil
+	Private oSize     := FwDefSize():New( .F. )
 
-
-
-
-
-	oDlg:Activate()
-
-Return
-
-Static Function GetDialog( oDlg, nTop, nLeft, nBottom, nRight, cCaption, lPixel )
-
-	Local oDialog := Nil
-	Local oSize   := FwDefSize():New( .F. )
+	oSize:AddObject ( 'MEMO', 90, 90, .T., .T. )
 
 	oSize:Process()
 
-	Default nTop     := oSize:aWindSize[1]
-	Default nLeft    := oSize:aWindSize[2]
-	Default nBottom  := oSize:aWindSize[3]
-	Default nRight   := oSize:aWindSize[4]
-	Default cCaption := ''
-	Default lPixel   := .T.
+	BuildDialog()
+	BuildMemo()
+
+	oDialog:Activate()
+
+Return
+
+Static Function BuildDialog()
 
 	oDialog := MsDialog():New(;
-	/* nTop */         nTop ,;
-	/* nLeft */       nLeft ,;
-	/* nBottom */   nBottom ,;
-	/* nRight */     nRight ,;
-	/* cCaption */ cCaption ,;
-	/* uParam6 */           ,;
-	/* uParam7 */           ,;
-	/* uParam8 */           ,;
-	/* uParam9 */           ,;
-	/* nClrText */          ,;
-	/* nClrBack */          ,;
-	/* uParam12 */          ,;
-	/* oWnd */              ,;
-	/* lPixel */     lPixel ,;
-	/* uParam15 */          ,;
-	/* uParam16 */          ,;
-	/* uParam17 */          ,;
-	/* lTransparent */       )
+	/* nTop */     oSize:aWindSize[1] ,;
+	/* nLeft */    oSize:aWindSize[2] ,;
+	/* nBottom */  oSize:aWindSize[3] ,;
+	/* nRight */   oSize:aWindSize[4] ,;
+	/* cCaption */                 '' ,;
+	/* uParam6 */                     ,;
+	/* uParam7 */                     ,;
+	/* uParam8 */                     ,;
+	/* uParam9 */                     ,;
+	/* nClrText */                    ,;
+	/* nClrBack */                    ,;
+	/* uParam12 */                    ,;
+	/* oWnd */                        ,;
+	/* lPixel */                  .T. ,;
+	/* uParam15 */                    ,;
+	/* uParam16 */                    ,;
+	/* uParam17 */                    ,;
+	/* lTransparent */                 )
 
-Return oDialog
+Return
+
+Static Function BuildMemo()
+
+	oMultiGet := TMultiGet():New(;
+	/* nRow */    oSize:GetDimension( 'MEMO', 'LININI' ) ,;
+	/* nCol */    oSize:GetDimension( 'MEMO', 'COLINI' ) ,;
+	/* bSetGet */                                        ,;
+	/* oWnd */                                   oDialog ,;
+	/* nWidth */  oSize:GetDimension( 'MEMO', 'COLEND' ) ,;
+	/* nHeight */ oSize:GetDimension( 'MEMO', 'LINEND' ) ,;
+	/* oFont */       TFont():New( 'Courier new',,-16, ) ,;
+	/* uParam8 */                                        ,;
+	/* uParam9 */                                        ,;
+	/* uParam10 */                                       ,;
+	/* uParam11 */                                       ,;
+	/* lPixel */                                     .T. ,;
+	/* uParam13 */                                       ,;
+	/* uParam14 */                                       ,;
+	/* bWhen */                                          ,;
+	/* uParam16 */                                       ,;
+	/* uParam17 */                                       ,;
+	/* lReadOnly */                                      ,;
+	/* bValid */                                         ,;
+	/* uParam20 */                                       ,;
+	/* uParam21 */                                       ,;
+	/* lNoBorder */                                      ,;
+	/* lVScroll */                                   .T. ,;
+	/* cLabelText */                                     ,;
+	/* nLabelPos */                                      ,;
+	/* oLabelFont */                                     ,;
+	/* nLabelColor */                                     )
+
+Return
