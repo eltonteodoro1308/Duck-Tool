@@ -12,14 +12,14 @@ User Function DkQuery()
 	Private aButton   := {}
 	Private oSize     := FwDefSize():New( .F. )
 
-	aAdd( aButton, { 'Abrir <F2>'      } )
-	aAdd( aButton, { 'Salvar <F3>'     } )
-	aAdd( aButton, { 'CSV <F4>'        } )
-	aAdd( aButton, { 'Executar <F5>'   } )
-	aAdd( aButton, { 'Parâmetros <F6>' } )
-	aAdd( aButton, { '????? <F7>' } )
+	aAdd( aButton, { 'Abrir <F2>'     , VK_F2, { || Alert( '2' ) } } )
+	aAdd( aButton, { 'Salvar <F3>'    , VK_F3, { || Alert( '3' ) } } )
+	aAdd( aButton, { 'CSV <F4>'       , VK_F4, { || Alert( '4' ) } } )
+	aAdd( aButton, { 'Executar <F5>'  , VK_F5, { || Alert( '5' ) } } )
+	aAdd( aButton, { 'Parâmetros <F6>', VK_F6, { || Alert( '6' ) } } )
+	aAdd( aButton, { 'Histórico <F7>' , VK_F7, { || Alert( '7' ) } } )
 
-	oSize:AddObject ( 'MULTIBTN' , 000, 030, .T., .F. )
+	oSize:AddObject ( 'MULTIBTN' , 000, 025, .T., .F. )
 	oSize:AddObject ( 'MEMO'     , 000, 000, .T., .T. )
 
 	oSize:Process()
@@ -31,6 +31,8 @@ User Function DkQuery()
 	For nX := 1 To Len( aButton )
 
 		oMultiBtn:AddButton( aButton[ nX, 1 ] )
+
+		SetKey ( aButton[ nX, 2 ], aButton[ nX, 3 ] )
 
 	Next nX
 
@@ -69,7 +71,7 @@ Static Function BldMltBtn()
 	/* nCol        */  oSize:GetDimension( 'MULTIBTN', 'COLINI' ) ,;
 	/* cCaption    */                                          '' ,;
 	/* oWnd        */                                     oDialog ,;
-	/* bAction     */  { | X, Y, Z, W | MltBtnExec( X, Y, Z, W ) },;
+	/* bAction     */  { | X, Y | MltBtnExec( X, Y ) },;
 	/* nWidth      */  oSize:GetDimension( 'MULTIBTN', 'XSIZE' )  ,;
 	/* nHeight     */  oSize:GetDimension( 'MULTIBTN', 'YSIZE' )  ,;
 	/* cimgName    */                                       'FORM',;
@@ -83,9 +85,9 @@ Static Function BldMltBtn()
 
 Return
 
-Static Function MltBtnExec( X, Y, Z, W )
+Static Function MltBtnExec( X, Y )
 
-	Alert( 'Botão ' + StrZero( Y, 3 ) )
+	Eval( aButton[ Y, 3 ] )
 
 	//	If y = 1
 	//
