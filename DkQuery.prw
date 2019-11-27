@@ -3,80 +3,41 @@
 
 User Function DkQuery()
 
-	Local oSize     := Nil
-	Local oDialog   := Nil
+	Local oDefSize  := FwDefSize():New( .F. )
+	Local oDlgMain  := Nil
 	Local oMultiGet := Nil
 	Local cMultiGet := ''
+	Local oFont     := TFont():New( 'Courier new',,-14, )
 	Local oMultiBtn := Nil
 	Local aMultiBtn := {}
 	Local nX        := 0
 
-	oSize := FwDefSize():New( .F. )
-	oSize:AddObject ( 'MULTIBTN', 000, 025, .T., .F. )
-	oSize:AddObject ( 'MULTIGET', 000, 000, .T., .T. )
-	oSize:Process()
+	oDefSize:AddObject ( 'MULTIBTN', 000, 025, .T., .F. )
+	oDefSize:AddObject ( 'MULTIGET', 000, 000, .T., .T. )
+	oDefSize:Process()
 
-	oDialog := MsDialog():New(;
-	/* nTop         */ oSize:aWindSize[ 1 ] ,;
-	/* nLeft        */ oSize:aWindSize[ 2 ] ,;
-	/* nBottom      */ oSize:aWindSize[ 3 ] ,;
-	/* nRight       */ oSize:aWindSize[ 4 ] ,;
-	/* cCaption     */                   '' ,;
-	/* uParam6      */                      ,;
-	/* uParam7      */                      ,;
-	/* uParam8      */                      ,;
-	/* uParam9      */                      ,;
-	/* nClrText     */                      ,;
-	/* nClrBack     */                      ,;
-	/* uParam12     */                      ,;
-	/* oWnd         */                      ,;
-	/* lPixel       */                  .T. ,;
-	/* uParam15     */                      ,;
-	/* uParam16     */                      ,;
-	/* uParam17     */                      ,;
-	/* lTransparent */                       )
+	DEFINE MSDIALOG oDlgMain TITLE '';
+	FROM oDefSize:aWindSize[ 1 ], oDefSize:aWindSize[ 2 ];
+	TO   oDefSize:aWindSize[ 3 ], oDefSize:aWindSize[ 4 ] PIXEL
 
-	oMultiGet := TMultiGet():New(;
-	/* nRow        */               oSize:GetDimension( 'MULTIGET', 'LININI' ) ,;
-	/* nCol        */               oSize:GetDimension( 'MULTIGET', 'COLINI' ) ,;
-	/* bSetGet     */ { | U | If( PCount() == 0, cMultiGet, cMultiGet := U ) } ,;
-	/* oWnd        */                                                  oDialog ,;
-	/* nWidth      */                oSize:GetDimension( 'MULTIGET', 'XSIZE' ) ,;
-	/* nHeight     */                oSize:GetDimension( 'MULTIGET', 'YSIZE' ) ,;
-	/* oFont       */                       TFont():New( 'Courier new',,-14, ) ,;
-	/* uParam8     */                                                          ,;
-	/* uParam9     */                                                          ,;
-	/* uParam10    */                                                          ,;
-	/* uParam11    */                                                          ,;
-	/* lPixel      */                                                      .T. ,;
-	/* uParam13    */                                                          ,;
-	/* uParam14    */                                                          ,;
-	/* bWhen       */                                                          ,;
-	/* uParam16    */                                                          ,;
-	/* uParam17    */                                                          ,;
-	/* lReadOnly   */                                                          ,;
-	/* bValid      */                                                          ,;
-	/* uParam20    */                                                          ,;
-	/* uParam21    */                                                          ,;
-	/* lNoBorder   */                                                          ,;
-	/* lVScroll    */                                                      .T. ,;
-	/* cLabelText  */                                                          ,;
-	/* nLabelPos   */                                                          ,;
-	/* oLabelFont  */                                                          ,;
-	/* nLabelColor */                                                           )
+	@ oDefSize:GetDimension( 'MULTIGET', 'LININI' ),  oDefSize:GetDimension( 'MULTIGET', 'COLINI' );
+	GET oMultiGet VAR cMultiGet OF oDlgMain MULTILINE;
+	SIZE oDefSize:GetDimension( 'MULTIGET', 'XSIZE' ), oDefSize:GetDimension( 'MULTIGET', 'YSIZE' );
+	FONT oFont;
+	HSCROLL NO VSCROLL PIXEL
 
 	oMultiBtn := TMultiBtn():New(;
-	/* nRow        */    oSize:GetDimension( 'MULTIBTN', 'LININI' ) ,;
-	/* nCol        */    oSize:GetDimension( 'MULTIBTN', 'COLINI' ) ,;
-	/* cCaption    */                                            '' ,;
-	/* oWnd        */                                       oDialog ,;
+	/* nRow        */     oDefSize:GetDimension( 'MULTIBTN', 'LININI' ) ,;
+	/* nCol        */     oDefSize:GetDimension( 'MULTIBTN', 'COLINI' ) ,;
+	/* cCaption    */                                                '' ,;
+	/* oWnd        */                                          oDlgMain ,;
 	/* bAction     */ { | oObj, nItem | Eval( aMultiBtn[ nItem, 3 ] ) } ,;
-	/* nWidth      */     oSize:GetDimension( 'MULTIBTN', 'XSIZE' ) ,;
-	/* nHeight     */     oSize:GetDimension( 'MULTIBTN', 'YSIZE' ) ,;
-	/* cimgName    */                                        'FORM' ,;
-	/* nOri        */                                             0 ,;
-	/* cMsg        */                                            '' ,;
-	/* nBtnPerLine */                                            10  )
+	/* nWidth      */      oDefSize:GetDimension( 'MULTIBTN', 'XSIZE' ) ,;
+	/* nHeight     */      oDefSize:GetDimension( 'MULTIBTN', 'YSIZE' ) ,;
+	/* cimgName    */                                            'FORM' ,;
+	/* nOri        */                                                 0 ,;
+	/* cMsg        */                                                '' ,;
+	/* nBtnPerLine */                                                10  )
 
 	oMultiBtn:SetFonts( 'Courier new', 10,'Courier new', 10 )
 
@@ -96,7 +57,7 @@ User Function DkQuery()
 
 	Next nX
 
-	oDialog:Activate()
+	ACTIVATE DIALOG oDlgMain CENTERED
 
 	For nX := 1 To Len( aMultiBtn )
 
