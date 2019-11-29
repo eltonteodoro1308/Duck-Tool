@@ -4,40 +4,54 @@
 User Function DkQuery()
 
 	Local oDefSize  := FwDefSize():New( .F. )
+	Local nRow      := 0
+	Local nCol      := 0
+	Local nWidth    := 0
+	Local nHeight   := 0
 	Local oDlgMain  := Nil
 	Local oMultiGet := Nil
 	Local cMultiGet := ''
 	Local oFont     := TFont():New( 'Courier new',,-14, )
 	Local oMultiBtn := Nil
 	Local aMultiBtn := {}
+	Local bMultiBtn := { | oObj, nItem | Eval( aMultiBtn[ nItem, 3 ] ) }
 	Local nX        := 0
 
 	oDefSize:AddObject ( 'MULTIBTN', 000, 025, .T., .F. )
 	oDefSize:AddObject ( 'MULTIGET', 000, 000, .T., .T. )
 	oDefSize:Process()
 
-	DEFINE MSDIALOG oDlgMain TITLE '';
-	FROM oDefSize:aWindSize[ 1 ], oDefSize:aWindSize[ 2 ];
-	TO   oDefSize:aWindSize[ 3 ], oDefSize:aWindSize[ 4 ] PIXEL
+	nRow    := oDefSize:aWindSize[ 1 ]
+	nCol    := oDefSize:aWindSize[ 2 ]
+	nWidth  := oDefSize:aWindSize[ 3 ]
+	nHeight := oDefSize:aWindSize[ 4 ]
 
-	@ oDefSize:GetDimension( 'MULTIGET', 'LININI' ),  oDefSize:GetDimension( 'MULTIGET', 'COLINI' );
-	GET oMultiGet VAR cMultiGet OF oDlgMain MULTILINE;
-	SIZE oDefSize:GetDimension( 'MULTIGET', 'XSIZE' ), oDefSize:GetDimension( 'MULTIGET', 'YSIZE' );
-	FONT oFont;
-	HSCROLL NO VSCROLL PIXEL
+	DEFINE MSDIALOG oDlgMain TITLE '' FROM nRow, nCol TO nWidth, nHeight PIXEL
+
+	nRow    := oDefSize:GetDimension( 'MULTIGET', 'LININI' )
+	nCol    := oDefSize:GetDimension( 'MULTIGET', 'COLINI' )
+	nWidth  := oDefSize:GetDimension( 'MULTIGET', 'XSIZE'  )
+	nHeight := oDefSize:GetDimension( 'MULTIGET', 'YSIZE'  )
+
+	@ nRow, nCol GET oMultiGet VAR cMultiGet OF oDlgMain MULTILINE SIZE nWidth, nHeight FONT oFont HSCROLL PIXEL
+
+	nRow    := oDefSize:GetDimension( 'MULTIBTN', 'LININI' )
+	nCol    := oDefSize:GetDimension( 'MULTIBTN', 'COLINI' )
+	nWidth  := oDefSize:GetDimension( 'MULTIBTN', 'XSIZE'  )
+	nHeight := oDefSize:GetDimension( 'MULTIBTN', 'YSIZE'  )
 
 	oMultiBtn := TMultiBtn():New(;
-	/* nRow        */     oDefSize:GetDimension( 'MULTIBTN', 'LININI' ) ,;
-	/* nCol        */     oDefSize:GetDimension( 'MULTIBTN', 'COLINI' ) ,;
-	/* cCaption    */                                                '' ,;
-	/* oWnd        */                                          oDlgMain ,;
-	/* bAction     */ { | oObj, nItem | Eval( aMultiBtn[ nItem, 3 ] ) } ,;
-	/* nWidth      */      oDefSize:GetDimension( 'MULTIBTN', 'XSIZE' ) ,;
-	/* nHeight     */      oDefSize:GetDimension( 'MULTIBTN', 'YSIZE' ) ,;
-	/* cimgName    */                                            'FORM' ,;
-	/* nOri        */                                                 0 ,;
-	/* cMsg        */                                                '' ,;
-	/* nBtnPerLine */                                                10  )
+	/* nRow        */      nRow ,;
+	/* nCol        */      nCol ,;
+	/* cCaption    */        '' ,;
+	/* oWnd        */  oDlgMain ,;
+	/* bAction     */ bMultiBtn ,;
+	/* nWidth      */    nWidth ,;
+	/* nHeight     */   nHeight ,;
+	/* cimgName    */    'FORM' ,;
+	/* nOri        */         0 ,;
+	/* cMsg        */        '' ,;
+	/* nBtnPerLine */        10  )
 
 	oMultiBtn:SetFonts( 'Courier new', 10,'Courier new', 10 )
 
@@ -239,6 +253,97 @@ Static Function BrowseF5( cTrab, aBrowse, oBrowse )
 		( cTrab )->( DbSkip() )
 
 	End Do
+
+Return
+
+Static Function GeraPlan()
+
+	Local cFile     := GetTempPath( .T. ) + GetNextAlias() + '.csv'
+	Local nHandle   := FCreate( cFile )
+	Local cBuffer   := ''
+	Local cAux      := ''
+	Local nQtdBytes := 0
+	Local nX        := 0
+
+	If nHandle # -1
+
+		//-- Gera Cabeçalho do arquivo
+		For nX := 1 To ( cTrab )->( FCount() )
+
+			cBuffer += ( cTrab )->( FieldName( nX ) )
+
+			If nX < ( cTrab )->( FCount() )
+
+				cBuffer += ";"
+
+			End If
+
+		Next nX
+
+		cBuffer += CRLF
+
+		nQtdBytes := Len( cBuffer )
+
+		FSeek(nHandle, 0, FS_END)
+
+		FWrite( nHandle, cBuffer, nQtdBytes )
+
+		cBuffer := ''
+
+		//-- Gera dados do arquivo
+		( cTrab )->( DbGoTop() )
+
+		Do While ! ( cTrab )->( Eof() )
+
+			For nX := 1 To ( cTrab )->( FCount() )
+
+				If ValType( ( cTrab )->&( FieldName( nX ) ) ) == 'N'
+
+					cAux := cValTochar( ( cTrab )->&( FieldName( nX ) ) )
+
+					cAux := StrTran( cAux, '.', ',' )
+
+					cBuffer += '"'
+					cBuffer += cAux
+					cBuffer +=  '"'
+
+				Else
+
+					cBuffer += '="'
+					cBuffer +=  cValTochar( ( cTrab )->&( FieldName( nX ) ) )
+					cBuffer +=  '"'
+
+				End If
+
+				If nX < ( cTrab )->( FCount() )
+
+					cBuffer += ";"
+
+				End If
+
+			Next nX
+
+			cBuffer += CRLF
+
+			nQtdBytes := Len( cBuffer )
+
+			FSeek(nHandle, 0, FS_END)
+
+			FWrite( nHandle, cBuffer, nQtdBytes )
+
+			cBuffer := ''
+
+			( cTrab )->( DbSkip() )
+
+		End Do
+
+	Else
+
+	End If
+
+	FClose( nHandle )
+
+	ShellExecute( 'Open', cFile, '', '', 1 )
 
 Return
 
