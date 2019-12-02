@@ -1,229 +1,80 @@
 #INCLUDE 'TOTVS.CH'
-#INCLUDE 'VKEY.CH'
+#INCLUDE 'FILEIO.CH'
 
 User Function DkQuery()
 
-	Local oDefSize  := FwDefSize():New( .F. )
-	Local nRow      := 0
-	Local nCol      := 0
-	Local nWidth    := 0
-	Local nHeight   := 0
-	Local oDlgMain  := Nil
-	Local oMultiGet := Nil
-	Local cMultiGet := ''
-	Local oFont     := TFont():New( 'Courier new',,-14, )
-	Local oMultiBtn := Nil
-	Local aMultiBtn := {}
-	Local bMultiBtn := { | oObj, nItem | Eval( aMultiBtn[ nItem, 3 ] ) }
-	Local nX        := 0
+	Local oDfSzDlg := FwDefSize():New( .F. )
+	Local oDfSzBtn := FwDefSize():New( .F. )
+	Local nRow     := 0
+	Local nCol     := 0
+	Local nWidth   := 0
+	Local nHeight  := 0
+	Local oDlg     := Nil
+	Local oBtnQry  := Nil
+	Local oBtnEnd  := Nil
+	Local oGet     := Nil
+	Local cGet     := ''
+	Local oFontGet := TFont():New( 'Courier new',,-14, )
+	Local oFontBtn := TFont():New( 'Courier new',,-12, )
 
-	oDefSize:AddObject ( 'MULTIBTN', 000, 025, .T., .F. )
-	oDefSize:AddObject ( 'MULTIGET', 000, 000, .T., .T. )
-	oDefSize:Process()
+	oDfSzDlg:AddObject ( 'oBtn', 000, 015, .T., .F. )
+	oDfSzDlg:AddObject ( 'oGet', 000, 000, .T., .T. )
+	oDfSzDlg:Process()
 
-	nRow    := oDefSize:aWindSize[ 1 ]
-	nCol    := oDefSize:aWindSize[ 2 ]
-	nWidth  := oDefSize:aWindSize[ 3 ]
-	nHeight := oDefSize:aWindSize[ 4 ]
+	oDfSzBtn:AddObject ( 'oBtnQry', 050, 015, .F., .F. )
+	oDfSzBtn:AddObject ( 'oBtnEnd', 050, 015, .F., .F. )
+	oDfSzBtn:lLateral := .T.
+	oDfSzBtn:Process()
 
-	DEFINE MSDIALOG oDlgMain TITLE '' FROM nRow, nCol TO nWidth, nHeight PIXEL
+	nRow    := oDfSzDlg:aWindSize[ 1 ]
+	nCol    := oDfSzDlg:aWindSize[ 2 ]
+	nWidth  := oDfSzDlg:aWindSize[ 3 ]
+	nHeight := oDfSzDlg:aWindSize[ 4 ]
 
-	nRow    := oDefSize:GetDimension( 'MULTIGET', 'LININI' )
-	nCol    := oDefSize:GetDimension( 'MULTIGET', 'COLINI' )
-	nWidth  := oDefSize:GetDimension( 'MULTIGET', 'XSIZE'  )
-	nHeight := oDefSize:GetDimension( 'MULTIGET', 'YSIZE'  )
+	DEFINE MSDIALOG oDlg TITLE '' FROM nRow, nCol TO nWidth, nHeight PIXEL
 
-	@ nRow, nCol GET oMultiGet VAR cMultiGet OF oDlgMain MULTILINE SIZE nWidth, nHeight FONT oFont HSCROLL PIXEL
+	nRow    := oDfSzBtn:GetDimension( 'oBtnQry', 'LININI' )
+	nCol    := oDfSzBtn:GetDimension( 'oBtnQry', 'COLINI' )
+	nWidth  := oDfSzBtn:GetDimension( 'oBtnQry', 'XSIZE'  )
+	nHeight := oDfSzBtn:GetDimension( 'oBtnQry', 'YSIZE'  )
 
-	nRow    := oDefSize:GetDimension( 'MULTIBTN', 'LININI' )
-	nCol    := oDefSize:GetDimension( 'MULTIBTN', 'COLINI' )
-	nWidth  := oDefSize:GetDimension( 'MULTIBTN', 'XSIZE'  )
-	nHeight := oDefSize:GetDimension( 'MULTIBTN', 'YSIZE'  )
+	@ nRow, nCol BUTTON oBtnQry PROMPT 'QUERY'	SIZE nWidth, nHeight OF oDlg FONT oFontBtn ACTION {|| ProcQry( cGet ) } PIXEL
 
-	oMultiBtn := TMultiBtn():New(;
-	/* nRow        */      nRow ,;
-	/* nCol        */      nCol ,;
-	/* cCaption    */        '' ,;
-	/* oWnd        */  oDlgMain ,;
-	/* bAction     */ bMultiBtn ,;
-	/* nWidth      */    nWidth ,;
-	/* nHeight     */   nHeight ,;
-	/* cimgName    */    'FORM' ,;
-	/* nOri        */         0 ,;
-	/* cMsg        */        '' ,;
-	/* nBtnPerLine */        10  )
+	nRow    := oDfSzBtn:GetDimension( 'oBtnEnd', 'LININI' )
+	nCol    := oDfSzBtn:GetDimension( 'oBtnEnd', 'COLINI' )
+	nWidth  := oDfSzBtn:GetDimension( 'oBtnEnd', 'XSIZE'  )
+	nHeight := oDfSzBtn:GetDimension( 'oBtnEnd', 'YSIZE'  )
 
-	oMultiBtn:SetFonts( 'Courier new', 10,'Courier new', 10 )
+	@ nRow, nCol BUTTON oBtnEnd PROMPT 'FECHAR' SIZE nWidth, nHeight OF oDlg FONT oFontBtn ACTION {|| oDlg:End() } PIXEL
 
-	//	aAdd( aMultiBtn, { '<F1> Help'      , VK_F1, { || ExecF1() } } )
-	//	aAdd( aMultiBtn, { '<F2> Abrir'     , VK_F2, { || ExecF2() } } )
-	//	aAdd( aMultiBtn, { '<F3> Salvar'    , VK_F3, { || ExecF3() } } )
-	//	aAdd( aMultiBtn, { '<F4> CSV'       , VK_F4, { || ExecF4() } } )
-	aAdd( aMultiBtn, { '<F5> Executar'  , VK_F5, { || ExecF5( cMultiGet ) } } )
-	//	aAdd( aMultiBtn, { '<F6> Parâmetros', VK_F6, { || ExecF6() } } )
-	//	aAdd( aMultiBtn, { '<F7> Histórico' , VK_F7, { || ExecF7() } } )
+	nRow    := oDfSzDlg:GetDimension( 'oGet', 'LININI' )
+	nCol    := oDfSzDlg:GetDimension( 'oGet', 'COLINI' )
+	nWidth  := oDfSzDlg:GetDimension( 'oGet', 'XSIZE'  )
+	nHeight := oDfSzDlg:GetDimension( 'oGet', 'YSIZE'  )
 
-	For nX := 1 To Len( aMultiBtn )
+	@ nRow,	nCol GET oGet VAR cGet OF oDlg MULTILINE SIZE nWidth, nHeight FONT oFontGet HSCROLL PIXEL
 
-		oMultiBtn:AddButton( aMultiBtn[ nX, 1 ] )
-
-		SetKey ( aMultiBtn[ nX, 2 ], aMultiBtn[ nX, 3 ] )
-
-	Next nX
-
-	ACTIVATE DIALOG oDlgMain CENTERED
-
-	For nX := 1 To Len( aMultiBtn )
-
-		SetKey ( aMultiBtn[ nX, 2 ], {||} )
-
-	Next nX
+	ACTIVATE DIALOG oDlg CENTERED
 
 Return
 
-Static Function ExecF5( cQuery )
+Static Function ProcQry( cQuery )
 
-	Local oSize     := Nil
-	Local oDialog   := Nil
-	Local oMultiGet := Nil
-	Local cMultiGet := ''
-	Local oMultiBtn := Nil
-	Local aMultiBtn := {}
-	Local nX        := 0
-	Local cErro     := ''
-	Local bError    := ErrorBlock( { | oErro | cErro := oErro:Description } )
-	Local cTrab     := ''
-	Local oBrowse   := Nil
-	Local aBrowse   := {}
-	Local aHeaders  := {}
-	Local bLine     := Nil
+	Local cErro  := ''
+	Local bError := ErrorBlock( { | oErro | cErro := oErro:Description } )
+
+	Private cTrab  := ''
 
 	MsgRun ( 'Banco de Dados Processando a Query ...', 'Aguarde ...', { | | cTrab := MpSysOpenQuery( cQuery ) } )
 
-	oSize := FwDefSize():New( .F. )
-	oSize:AddObject ( 'MULTIBTN', 000, 025, .T., .F. )
-	oSize:AddObject ( 'RESULT'  , 000, 000, .T., .T. )
-	oSize:Process()
-
-	oDialog := MsDialog():New(;
-	/* nTop         */ oSize:aWindSize[ 1 ] ,;
-	/* nLeft        */ oSize:aWindSize[ 2 ] ,;
-	/* nBottom      */ oSize:aWindSize[ 3 ] ,;
-	/* nRight       */ oSize:aWindSize[ 4 ] ,;
-	/* cCaption     */                   '' ,;
-	/* uParam6      */                      ,;
-	/* uParam7      */                      ,;
-	/* uParam8      */                      ,;
-	/* uParam9      */                      ,;
-	/* nClrText     */                      ,;
-	/* nClrBack     */                      ,;
-	/* uParam12     */                      ,;
-	/* oWnd         */                      ,;
-	/* lPixel       */                  .T. ,;
-	/* uParam15     */                      ,;
-	/* uParam16     */                      ,;
-	/* uParam17     */                      ,;
-	/* lTransparent */                       )
-
 	If ! Empty( cErro )
 
-		cMultiGet := cErro
-
-		oMultiGet := TMultiGet():New(;
-		/* nRow        */                 oSize:GetDimension( 'RESULT', 'LININI' ) ,;
-		/* nCol        */                 oSize:GetDimension( 'RESULT', 'COLINI' ) ,;
-		/* bSetGet     */ { | U | If( PCount() == 0, cMultiGet, cMultiGet := U ) } ,;
-		/* oWnd        */                                                  oDialog ,;
-		/* nWidth      */                  oSize:GetDimension( 'RESULT', 'XSIZE' ) ,;
-		/* nHeight     */                  oSize:GetDimension( 'RESULT', 'YSIZE' ) ,;
-		/* oFont       */                       TFont():New( 'Courier new',,-14, ) ,;
-		/* uParam8     */                                                          ,;
-		/* uParam9     */                                                          ,;
-		/* uParam10    */                                                          ,;
-		/* uParam11    */                                                          ,;
-		/* lPixel      */                                                      .T. ,;
-		/* uParam13    */                                                          ,;
-		/* uParam14    */                                                          ,;
-		/* bWhen       */                                                          ,;
-		/* uParam16    */                                                          ,;
-		/* uParam17    */                                                          ,;
-		/* lReadOnly   */                                                      .T. ,;
-		/* bValid      */                                                          ,;
-		/* uParam20    */                                                          ,;
-		/* uParam21    */                                                          ,;
-		/* lNoBorder   */                                                          ,;
-		/* lVScroll    */                                                      .T. ,;
-		/* cLabelText  */                                                          ,;
-		/* nLabelPos   */                                                          ,;
-		/* oLabelFont  */                                                          ,;
-		/* nLabelColor */                                                           )
-
-		cErro := ''
+		AutoGrLog( cErro )
+		MostraErro()
 
 	Else
 
-		oBrowse := TWBrowse():New(;
-		/* nRow       */ oSize:GetDimension( 'RESULT', 'LININI' ) ,;
-		/* nCol       */ oSize:GetDimension( 'RESULT', 'COLINI' ) ,;
-		/* nWidth     */  oSize:GetDimension( 'RESULT', 'XSIZE' ) ,;
-		/* nHeight    */  oSize:GetDimension( 'RESULT', 'YSIZE' ) ,;
-		/* bLine      */                                          ,;
-		/* aHeaders   */                                 aHeaders ,;
-		/* aColSizes  */                                          ,;
-		/* oDlg       */                                  oDialog ,;
-		/* cField     */                                          ,;
-		/* uValue1    */                                          ,;
-		/* uValue2    */                                          ,;
-		/* bChange    */                                          ,;
-		/* bLDblClick */                                          ,;
-		/* bRClick    */                                          ,;
-		/* oFont      */       TFont():New( 'Courier new',,-14, ) ,;
-		/* oCursor    */                                          ,;
-		/* nClrFore   */                                          ,;
-		/* nClrBack   */                                          ,;
-		/* cMsg       */                                          ,;
-		/* uParam20   */                                          ,;
-		/* cAlias     */                                          ,;
-		/* lPixel     */                                      .T. ,;
-		/* bWhen      */                                          ,;
-		/* uParam24   */                                          ,;
-		/* bValid     */                                          ,;
-		/* lHScroll   */                                      .T. ,;
-		/* lVScroll   */                                      .T.  )
-
-		MsgRun ( 'Montando Browse de Exibição ...', 'Aguarde ...', { | | BrowseF5( cTrab, aBrowse, oBrowse ) } )
-
-		oBrowse:SetArray( aBrowse )
-
-		bLine := '{||{'
-
-		For nX := 1 To ( cTrab )->( FCount() )
-
-			aAdd( aHeaders, ( cTrab )->( FieldName( nX ) ) )
-
-			bLine += 'aBrowse[ oBrowse:nAt, ' + cValToChar( nX ) + ']'
-
-			If nX < ( cTrab )->( FCount() )
-
-				bLine += ','
-
-			End If
-
-		Next nX
-
-		bLine += '}}'
-
-		bLine := &( bLine )
-
-		oBrowse:bLine := bLine
-
-	End If
-
-	oDialog:Activate()
-
-	If Select( cTrab ) > 0
-
-		( cTrab )->( DbCloseArea() )
+		MsgRun ( 'Montando Browse de Exibição ...', 'Aguarde ...', { | | ShowBrw() } )
 
 	End If
 
@@ -231,10 +82,60 @@ Static Function ExecF5( cQuery )
 
 Return
 
-Static Function BrowseF5( cTrab, aBrowse, oBrowse )
+Static Function ShowBrw()
 
-	Local aAux := {}
-	Local nX   := nX
+	Local oDfSzDlg := FwDefSize():New( .F. )
+	Local oDfSzBtn := FwDefSize():New( .F. )
+	Local nRow     := 0
+	Local nCol     := 0
+	Local nWidth   := 0
+	Local nHeight  := 0
+	Local oDlg     := Nil
+	Local oBtnCsv  := Nil
+	Local oBtnEnd  := Nil
+	Local oGet     := Nil
+	Local cGet     := ''
+	Local oBrowse   := Nil
+	Local aBrowse   := {}
+	Local aAux      := {}
+	Local aHeaders  := {}
+	Local bLine     := Nil
+	Local oFontGet := TFont():New( 'Courier new',,-14, )
+	Local oFontBtn := TFont():New( 'Courier new',,-12, )
+	Local oFontBrw := TFont():New( 'Courier new',,-12, )
+	Local nX        := 0
+
+	oDfSzDlg:AddObject ( 'oBtn'   , 000, 015, .T., .F. )
+	oDfSzDlg:AddObject ( 'oBrowse', 000, 000, .T., .T. )
+	oDfSzDlg:Process()
+
+	oDfSzBtn:AddObject ( 'oBtnCsv', 050, 015, .F., .F. )
+	oDfSzBtn:AddObject ( 'oBtnEnd', 050, 015, .F., .F. )
+	oDfSzBtn:lLateral := .T.
+	oDfSzBtn:Process()
+
+	nRow    := oDfSzDlg:aWindSize[ 1 ]
+	nCol    := oDfSzDlg:aWindSize[ 2 ]
+	nWidth  := oDfSzDlg:aWindSize[ 3 ]
+	nHeight := oDfSzDlg:aWindSize[ 4 ]
+
+	DEFINE MSDIALOG oDlg TITLE '' FROM nRow, nCol TO nWidth, nHeight PIXEL
+
+	nRow    := oDfSzBtn:GetDimension( 'oBtnCsv', 'LININI' )
+	nCol    := oDfSzBtn:GetDimension( 'oBtnCsv', 'COLINI' )
+	nWidth  := oDfSzBtn:GetDimension( 'oBtnCsv', 'XSIZE'  )
+	nHeight := oDfSzBtn:GetDimension( 'oBtnCsv', 'YSIZE'  )
+
+	@ nRow, nCol BUTTON oBtnCsv PROMPT 'CSV' SIZE nWidth, nHeight OF oDlg FONT oFontBtn;
+	ACTION {|| MsgRun ( 'Gerando Arquivo ...', 'Aguarde ...', { | | ProcCsv() } ) } PIXEL
+
+
+	nRow    := oDfSzBtn:GetDimension( 'oBtnEnd', 'LININI' )
+	nCol    := oDfSzBtn:GetDimension( 'oBtnEnd', 'COLINI' )
+	nWidth  := oDfSzBtn:GetDimension( 'oBtnEnd', 'XSIZE'  )
+	nHeight := oDfSzBtn:GetDimension( 'oBtnEnd', 'YSIZE'  )
+
+	@ nRow, nCol BUTTON oBtnEnd PROMPT 'FECHAR' SIZE nWidth, nHeight OF oDlg FONT oFontBtn ACTION {|| oDlg:End() } PIXEL
 
 	( cTrab )->( DbGoTop() )
 
@@ -254,9 +155,69 @@ Static Function BrowseF5( cTrab, aBrowse, oBrowse )
 
 	End Do
 
+	bLine := '{||{'
+
+	For nX := 1 To ( cTrab )->( FCount() )
+
+		aAdd( aHeaders, ( cTrab )->( FieldName( nX ) ) )
+
+		bLine += 'aBrowse[ oBrowse:nAt, ' + cValToChar( nX ) + ']'
+
+		If nX < ( cTrab )->( FCount() )
+
+			bLine += ','
+
+		End If
+
+	Next nX
+
+	bLine += '}}'
+
+	bLine := &( bLine )
+
+	oBrowse := TWBrowse():New(;
+	/* nRow       */ oDfSzDlg:GetDimension( 'oBrowse', 'LININI' ) ,;
+	/* nCol       */ oDfSzDlg:GetDimension( 'oBrowse', 'COLINI' ) ,;
+	/* nWidth     */ oDfSzDlg:GetDimension( 'oBrowse', 'XSIZE'  ) ,;
+	/* nHeight    */ oDfSzDlg:GetDimension( 'oBrowse', 'YSIZE'  ) ,;
+	/* bLine      */                                              ,;
+	/* aHeaders   */                                     aHeaders ,;
+	/* aColSizes  */                                              ,;
+	/* oDlg       */                                         oDlg ,;
+	/* cField     */                                              ,;
+	/* uValue1    */                                              ,;
+	/* uValue2    */                                              ,;
+	/* bChange    */                                              ,;
+	/* bLDblClick */                                              ,;
+	/* bRClick    */                                              ,;
+	/* oFont      */                                     oFontBrw ,;
+	/* oCursor    */                                              ,;
+	/* nClrFore   */                                              ,;
+	/* nClrBack   */                                              ,;
+	/* cMsg       */                                              ,;
+	/* uParam20   */                                              ,;
+	/* cAlias     */                                              ,;
+	/* lPixel     */                                          .T. ,;
+	/* bWhen      */                                              ,;
+	/* uParam24   */                                              ,;
+	/* bValid     */                                              ,;
+	/* lHScroll   */                                          .T. ,;
+	/* lVScroll   */                                          .T.  )
+
+	oBrowse:SetArray( aBrowse )
+	oBrowse:bLine := bLine
+
+	oDlg:Activate()
+
+	If Select( cTrab ) > 0
+
+		( cTrab )->( DbCloseArea() )
+
+	End If
+
 Return
 
-Static Function GeraPlan()
+Static Function ProcCsv()
 
 	Local cFile     := GetTempPath( .T. ) + GetNextAlias() + '.csv'
 	Local nHandle   := FCreate( cFile )
@@ -344,6 +305,41 @@ Static Function GeraPlan()
 	FClose( nHandle )
 
 	ShellExecute( 'Open', cFile, '', '', 1 )
+
+Return
+
+Static Function DefKey( cTela )
+
+	Default cTela := ''
+
+	If cTela := ''
+
+	ElseIf cTela := 'Help'
+
+	ElseIf cTela := 'Abrir'
+
+	ElseIf cTela := ''
+
+	ElseIf cTela := ''
+
+		SetKey( VK_F1, { || } )
+		SetKey( VK_F2, { || } )
+		SetKey( VK_F3, { || } )
+		SetKey( VK_F4, { || } )
+		SetKey( VK_F5, { || } )
+		SetKey( VK_F6, { || } )
+		SetKey( VK_F7, { || } )
+
+		//	aAdd( aMultiBtn, { '<F1> Help'      , VK_F1, { || ExecF1() } } )
+		//	aAdd( aMultiBtn, { '<F2> Abrir'     , VK_F2, { || ExecF2() } } )
+		//	aAdd( aMultiBtn, { '<F3> Salvar'    , VK_F3, { || ExecF3() } } )
+		//	aAdd( aMultiBtn, { '<F4> CSV'       , VK_F4, { || ExecF4() } } )
+		//  aAdd( aMultiBtn, { '<F5> Executar'  , VK_F5, { || ExecF5( cMultiGet ) } } )
+		//	aAdd( aMultiBtn, { '<F6> Parâmetros', VK_F6, { || ExecF6() } } )
+		//	aAdd( aMultiBtn, { '<F7> Histórico' , VK_F7, { || ExecF7() } } )
+		//	aAdd( aMultiBtn, { '<F8> Script' , VK_F7, { || ExecF7() } } )
+
+	End If
 
 Return
 
