@@ -74,7 +74,7 @@ Static Function ProcQry( cQuery )
 
 	Else
 
-		MsgRun ( 'Montando Browse de ExibiÁ„o ...', 'Aguarde ...', { | | ShowBrw() } )
+		MsgRun ( 'Montando Browse de Exibi√ß√£o ...', 'Aguarde ...', { | | ShowBrw() } )
 
 	End If
 
@@ -228,7 +228,7 @@ Static Function ProcCsv()
 
 	If nHandle # -1
 
-		//-- Gera CabeÁalho do arquivo
+		//-- Gera Cabe√ßalho do arquivo
 		For nX := 1 To ( cTrab )->( FCount() )
 
 			cBuffer += ( cTrab )->( FieldName( nX ) )
@@ -335,8 +335,8 @@ Static Function DefKey( cTela )
 		//	aAdd( aMultiBtn, { '<F3> Salvar'    , VK_F3, { || ExecF3() } } )
 		//	aAdd( aMultiBtn, { '<F4> CSV'       , VK_F4, { || ExecF4() } } )
 		//  aAdd( aMultiBtn, { '<F5> Executar'  , VK_F5, { || ExecF5( cMultiGet ) } } )
-		//	aAdd( aMultiBtn, { '<F6> Par‚metros', VK_F6, { || ExecF6() } } )
-		//	aAdd( aMultiBtn, { '<F7> HistÛrico' , VK_F7, { || ExecF7() } } )
+		//	aAdd( aMultiBtn, { '<F6> Par√¢metros', VK_F6, { || ExecF6() } } )
+		//	aAdd( aMultiBtn, { '<F7> Hist√≥rico' , VK_F7, { || ExecF7() } } )
 		//	aAdd( aMultiBtn, { '<F8> Script' , VK_F7, { || ExecF7() } } )
 
 	End If
@@ -358,3 +358,38 @@ Return
 //
 //	oMultiGet:Refresh()
 
+/*
+Static Function F550SldC(cTable,cCodigo,cLoja,cDC)
+
+Local cQuery	:= ""
+Local nValor	:= 0
+
+DEFAULT cTable	:= ""
+DEFAULT cCodigo := ""
+DEFAULT cLoja	:= ""
+
+If !Empty(cCodigo)
+
+	If oPreparC == nil
+		cQuery 	:= "SELECT SUM(ABS(VALOR)) VLRX FROM "+ cTable +" "
+		cQuery 	+= "WHERE CODIGO = ? AND"
+		cQuery 	+= " LOJA = ? AND"
+		cQuery 	+= " DATAEM < '" + DTOS(MV_PAR01) + "' AND "
+		cQuery 	+= " DC = ? "
+
+		cQuery 	:= ChangeQuery(cQuery)
+		oPreparC:= FWPreparedStatement():New(cQuery)
+	Endif
+
+	oPreparC:SetString(1,cCodigo)
+	oPreparC:SetString(2,cLoja)
+	oPreparC:SetString(3,cDC)
+		
+	cQuery := oPreparC:GetFixQuery()
+
+	nValor := ABS(MpSysExecScalar(cQuery,"VLRX"))
+
+Endif
+
+Return nValor
+*/
