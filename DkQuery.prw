@@ -1,8 +1,7 @@
 //TODO INCLUIR BOTÃO DE ATUALIZAR NA TELA DE BROWSE
 //TODO EXIBIR NA TELA DE BROWSE A QUANTIDADE DE REGISTROS EXIBIDOS
 //TODO EXIBIR NA TELA DE BROWSE O TEMPO DE EXECUÇÃO DA QUERY
-//TODO DEFINIR FUNÇÃO A CHECKBOX EXIBI DADOS CONFORME DICIONÁRIO
-//TODO AJUSTAR PROBLEMA DE DEIXAR A TELA EM BRANCO AO SELECIONAR ARQUIVO E CLICAR EM CANCELAR
+//TODO DEFINIR FUNÇÃO A CHECKBOX EXIBE DADOS CONFORME DICIONÁRIO
 
 #INCLUDE 'TOTVS.CH'
 #INCLUDE 'FILEIO.CH'
@@ -66,7 +65,7 @@ User Function DkQuery()
 	/* nWidth   */ oDfSzBtn:GetDimension( 'oBtnQuery', 'XSIZE'  ) ,;
 	/* nHeight  */ oDfSzBtn:GetDimension( 'oBtnQuery', 'YSIZE'  ) ,;
 	/* uParam8  */                                                ,;
-	/* oFont    */         TFont():New( 'Courier new',,-12,,.T. ) ,;
+	/* oFont    */            TFont():New( 'Consolas',,-12,,.T. ) ,;
 	/* uParam10 */                                                ,;
 	/* lPixel   */                                            .T. ,;
 	/* uParam12 */                                                ,;
@@ -85,7 +84,7 @@ User Function DkQuery()
 	/* nWidth   */ oDfSzBtn:GetDimension( 'oBtnScript', 'XSIZE'  ) ,;
 	/* nHeight  */ oDfSzBtn:GetDimension( 'oBtnScript', 'YSIZE'  ) ,;
 	/* uParam8  */                                                 ,;
-	/* oFont    */          TFont():New( 'Courier new',,-12,,.T. ) ,;
+	/* oFont    */             TFont():New( 'Consolas',,-12,,.T. ) ,;
 	/* uParam10 */                                                 ,;
 	/* lPixel   */                                             .T. ,;
 	/* uParam12 */                                                 ,;
@@ -96,23 +95,23 @@ User Function DkQuery()
 	/* uParam17 */                                                  )
 
 	oBtnOpen := TButton():New(;
-	/* nRow     */                                           oDfSzBtn:GetDimension( 'oBtnOpen', 'LININI' ) ,;
-	/* nCol     */                                           oDfSzBtn:GetDimension( 'oBtnOpen', 'COLINI' ) ,;
-	/* cCaption */                                                                                 'ABRIR' ,;
-	/* oWnd     */                                                                                    oDlg ,;
-	/* bAction  */ { || cGet := ReadQuery( cGet ) } ,;
-	/* nWidth   */                                            oDfSzBtn:GetDimension( 'oBtnOpen', 'XSIZE' ) ,;
-	/* nHeight  */                                            oDfSzBtn:GetDimension( 'oBtnOpen', 'YSIZE' ) ,;
-	/* uParam8  */                                                                                         ,;
-	/* oFont    */                                                  TFont():New( 'Courier new',,-12,,.T. ) ,;
-	/* uParam10 */                                                                                         ,;
-	/* lPixel   */                                                                                     .T. ,;
-	/* uParam12 */                                                                                         ,;
-	/* uParam13 */                                                                                         ,;
-	/* uParam14 */                                                                                         ,;
-	/* bWhen    */                                                                                         ,;
-	/* uParam16 */                                                                                         ,;
-	/* uParam17 */                                                                                          )
+	/* nRow     */ oDfSzBtn:GetDimension( 'oBtnOpen', 'LININI' ) ,;
+	/* nCol     */ oDfSzBtn:GetDimension( 'oBtnOpen', 'COLINI' ) ,;
+	/* cCaption */                                       'ABRIR' ,;
+	/* oWnd     */                                          oDlg ,;
+	/* bAction  */              { || cGet := ReadQuery( cGet ) } ,;
+	/* nWidth   */  oDfSzBtn:GetDimension( 'oBtnOpen', 'XSIZE' ) ,;
+	/* nHeight  */  oDfSzBtn:GetDimension( 'oBtnOpen', 'YSIZE' ) ,;
+	/* uParam8  */                                               ,;
+	/* oFont    */           TFont():New( 'Consolas',,-12,,.T. ) ,;
+	/* uParam10 */                                               ,;
+	/* lPixel   */                                           .T. ,;
+	/* uParam12 */                                               ,;
+	/* uParam13 */                                               ,;
+	/* uParam14 */                                               ,;
+	/* bWhen    */                                               ,;
+	/* uParam16 */                                               ,;
+	/* uParam17 */                                                )
 
 	oBtnSave := TButton():New(;
 	/* nRow     */                                         oDfSzBtn:GetDimension( 'oBtnSave', 'LININI' ) ,;
@@ -123,7 +122,7 @@ User Function DkQuery()
 	/* nWidth   */                                         oDfSzBtn:GetDimension( 'oBtnSave', 'XSIZE'  ) ,;
 	/* nHeight  */                                         oDfSzBtn:GetDimension( 'oBtnSave', 'YSIZE'  ) ,;
 	/* uParam8  */                                                                                       ,;
-	/* oFont    */                                                TFont():New( 'Courier new',,-12,,.T. ) ,;
+	/* oFont    */                                                   TFont():New( 'Consolas',,-12,,.T. ) ,;
 	/* uParam10 */                                                                                       ,;
 	/* lPixel   */                                                                                   .T. ,;
 	/* uParam12 */                                                                                       ,;
@@ -142,7 +141,7 @@ User Function DkQuery()
 	/* nWidth   */ oDfSzBtn:GetDimension( 'oBtnCsv', 'XSIZE'  ) ,;
 	/* nHeight  */ oDfSzBtn:GetDimension( 'oBtnCsv', 'YSIZE'  ) ,;
 	/* uParam8  */                                              ,;
-	/* oFont    */       TFont():New( 'Courier new',,-12,,.T. ) ,;
+	/* oFont    */          TFont():New( 'Consolas',,-12,,.T. ) ,;
 	/* uParam10 */                                              ,;
 	/* lPixel   */                                          .T. ,;
 	/* uParam12 */                                              ,;
@@ -161,7 +160,7 @@ User Function DkQuery()
 	/* nWidth   */ oDfSzBtn:GetDimension( 'oBtnEnd', 'XSIZE'  ) ,;
 	/* nHeight  */ oDfSzBtn:GetDimension( 'oBtnEnd', 'YSIZE'  ) ,;
 	/* uParam8  */                                              ,;
-	/* oFont    */       TFont():New( 'Courier new',,-12,,.T. ) ,;
+	/* oFont    */          TFont():New( 'Consolas',,-12,,.T. ) ,;
 	/* uParam10 */                                              ,;
 	/* lPixel   */                                          .T. ,;
 	/* uParam12 */                                              ,;
@@ -181,7 +180,7 @@ User Function DkQuery()
 	/* nHeight   */ oDfSzBtn:GetDimension( 'oChkDic', 'YSIZE'  ) ,;
 	/* uParam8   */                                              ,;
 	/* bLClicked */                                              ,;
-	/* oFont     */       TFont():New( 'Courier new',,-14,,.T. ) ,;
+	/* oFont     */          TFont():New( 'Consolas',,-14,,.T. ) ,;
 	/* bValid    */                                              ,;
 	/* nClrText  */                                              ,;
 	/* nClrPane  */                                              ,;
@@ -198,7 +197,7 @@ User Function DkQuery()
 	/* oWnd        */                                           oDlg ,;
 	/* nWidth      */       oDfSzDlg:GetDimension( 'oGet', 'XSIZE' ) ,;
 	/* nHeight     */       oDfSzDlg:GetDimension( 'oGet', 'YSIZE' ) ,;
-	/* oFont       */             TFont():New( 'Courier new',,-14, ) ,;
+	/* oFont       */                TFont():New( 'Consolas',,-14, ) ,;
 	/* uParam8     */                                                ,;
 	/* uParam9     */                                                ,;
 	/* uParam10    */                                                ,;
@@ -349,7 +348,7 @@ Static Function ShowBrw()
 	/* nWidth   */                                oDfSzBtn:GetDimension( 'oBtnCsv', 'XSIZE'  ) ,;
 	/* nHeight  */                                oDfSzBtn:GetDimension( 'oBtnCsv', 'YSIZE'  ) ,;
 	/* uParam8  */                                                                             ,;
-	/* oFont    */                                      TFont():New( 'Courier new',,-12,,.T. ) ,;
+	/* oFont    */                                         TFont():New( 'Consolas',,-12,,.T. ) ,;
 	/* uParam10 */                                                                             ,;
 	/* lPixel   */                                                                         .T. ,;
 	/* uParam12 */                                                                             ,;
@@ -368,7 +367,7 @@ Static Function ShowBrw()
 	/* nWidth   */ oDfSzBtn:GetDimension( 'oBtnEnd', 'XSIZE'  ) ,;
 	/* nHeight  */ oDfSzBtn:GetDimension( 'oBtnEnd', 'YSIZE'  ) ,;
 	/* uParam8  */                                              ,;
-	/* oFont    */       TFont():New( 'Courier new',,-12,,.T. ) ,;
+	/* oFont    */          TFont():New( 'Consolas',,-12,,.T. ) ,;
 	/* uParam10 */                                              ,;
 	/* lPixel   */                                          .T. ,;
 	/* uParam12 */                                              ,;
@@ -431,7 +430,7 @@ Static Function ShowBrw()
 	/* bChange    */                                              ,;
 	/* bLDblClick */                                              ,;
 	/* bRClick    */                                              ,;
-	/* oFont      */           TFont():New( 'Courier new',,-12, ) ,;
+	/* oFont      */              TFont():New( 'Consolas',,-12, ) ,;
 	/* oCursor    */                                              ,;
 	/* nClrFore   */                                              ,;
 	/* nClrBack   */                                              ,;
