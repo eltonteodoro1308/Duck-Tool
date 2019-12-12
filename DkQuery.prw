@@ -1,3 +1,9 @@
+//TODO INCLUIR BOTÃO DE ATUALIZAR NA TELA DE BROWSE
+//TODO EXIBIR NA TELA DE BROWSE A QUANTIDADE DE REGISTROS EXIBIDOS
+//TODO EXIBIR NA TELA DE BROWSE O TEMPO DE EXECUÇÃO DA QUERY
+//TODO DEFINIR FUNÇÃO A CHECKBOX EXIBI DADOS CONFORME DICIONÁRIO
+//TODO AJUSTAR PROBLEMA DE DEIXAR A TELA EM BRANCO AO SELECIONAR ARQUIVO E CLICAR EM CANCELAR
+
 #INCLUDE 'TOTVS.CH'
 #INCLUDE 'FILEIO.CH'
 
@@ -94,7 +100,7 @@ User Function DkQuery()
 	/* nCol     */                                           oDfSzBtn:GetDimension( 'oBtnOpen', 'COLINI' ) ,;
 	/* cCaption */                                                                                 'ABRIR' ,;
 	/* oWnd     */                                                                                    oDlg ,;
-	/* bAction  */ { || cGet := MemoRead( cGetFile ( '*.sql|*.sql', 'Consultas SQL',,,.F.,,.T., .T. )  ) } ,;
+	/* bAction  */ { || cGet := ReadQuery( cGet ) } ,;
 	/* nWidth   */                                            oDfSzBtn:GetDimension( 'oBtnOpen', 'XSIZE' ) ,;
 	/* nHeight  */                                            oDfSzBtn:GetDimension( 'oBtnOpen', 'YSIZE' ) ,;
 	/* uParam8  */                                                                                         ,;
@@ -272,6 +278,20 @@ Static Function ProcScript( cScript )
 	End If
 
 Return
+
+Static Function ReadQuery( cGet )
+
+	Local cRet := ''
+
+	cRet := MemoRead( cGetFile ( '*.sql|*.sql', 'Consultas SQL',,,.F.,,.T., .T. )  )
+
+	If Empty( cRet )
+
+		cRet := cGet
+
+	End If
+
+Return cRet
 
 Static Function ShowBrw()
 
@@ -546,6 +566,7 @@ Static Function Array2Csv()
 	Local cAux      := ''
 	Local nQtdBytes := 0
 	Local nX        := 0
+	Local nZ        := 0
 	Local cValType  := ''
 
 	If nHandle # -1
