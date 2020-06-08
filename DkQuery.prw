@@ -1,7 +1,7 @@
-//TODO INCLUIR BOT√O DE ATUALIZAR NA TELA DE BROWSE
+//TODO INCLUIR BOT√ÉO DE ATUALIZAR NA TELA DE BROWSE
 //TODO EXIBIR NA TELA DE BROWSE A QUANTIDADE DE REGISTROS EXIBIDOS
-//TODO EXIBIR NA TELA DE BROWSE O TEMPO DE EXECU«√O DA QUERY
-//TODO DEFINIR FUN«√O A CHECKBOX EXIBE DADOS CONFORME DICION¡RIO
+//TODO EXIBIR NA TELA DE BROWSE O TEMPO DE EXECU√á√ÉO DA QUERY
+//TODO DEFINIR FUN√á√ÉO A CHECKBOX EXIBE DADOS CONFORME DICION√ÅRIO
 
 #INCLUDE 'TOTVS.CH'
 #INCLUDE 'FILEIO.CH'
@@ -173,7 +173,7 @@ User Function DkQuery()
 	oChkDic := TCheckBox():New(;
 	/* nRow      */ oDfSzBtn:GetDimension( 'oChkDic', 'LININI' ) + 4 ,;
 	/* nCol      */ oDfSzBtn:GetDimension( 'oChkDic', 'COLINI' ) ,;
-	/* cCaption  */  'FORMATA OS CAMPOS CONFORME O DICION¡RIO ?' ,;
+	/* cCaption  */  'FORMATA OS CAMPOS CONFORME O DICION√ÅRIO ?' ,;
 	/* bSetGet   */                               { || lChkDic } ,;
 	/* oDlg      */                                         oDlg ,;
 	/* nWidth    */ oDfSzBtn:GetDimension( 'oChkDic', 'XSIZE'  ) ,;
@@ -227,12 +227,27 @@ Static Function ProcQuery( cQuery, cTipo )
 
 	Local cErro  := ''
 	Local bError := ErrorBlock( { | oErro | cErro := oErro:Description } )
+	Local nX     := 0
+	Local cAux   := ""
+	Local aQuery := Nil
 
 	Private cTrab  := ''
 
 	MemoWrite( 'DkQuery.sql', cQuery )
 
-	MsgRun ( 'Banco de Dados Processando a Query ...', 'Aguarde ...', { | | cTrab := MpSysOpenQuery( cQuery ) } )
+	aQuery := StrTokArr2( cQuery, CHR(13)+CHR(10), .T. )
+
+	For nX := 1 To Len( aQuery )
+
+		If ! Empty( aQuery[ nX ] ) .And. SubStr( aQuery[nX], 1, 2 ) != '--'
+
+			cAux += aQuery[nX]
+
+		End If
+
+	Next nX
+
+	MsgRun ( 'Banco de Dados Processando a Query ...', 'Aguarde ...', { | | cTrab := MpSysOpenQuery( cAux ) } )
 
 	If ! Empty( cErro )
 
@@ -243,7 +258,7 @@ Static Function ProcQuery( cQuery, cTipo )
 
 		If cTipo == 'QUERY'
 
-			MsgRun ( 'Montando Browse de ExibiÁ„o ...', 'Aguarde ...', { | | ShowBrw() } )
+			MsgRun ( 'Montando Browse de Exibi√ß√£o ...', 'Aguarde ...', { | | ShowBrw() } )
 
 		ElseIf cTipo == 'CSV'
 
@@ -272,7 +287,7 @@ Static Function ProcScript( cScript )
 
 	Else
 
-		ApMsgInfo( 'Script Processado Com Sucesso.', 'AtenÁ„o !!!' )
+		ApMsgInfo( 'Script Processado Com Sucesso.', 'Aten√ß√£o !!!' )
 
 	End If
 
@@ -469,7 +484,7 @@ Static Function Query2Csv()
 
 	If nHandle # -1
 
-		//-- Gera CabeÁalho do arquivo
+		//-- Gera Cabe√ßalho do arquivo
 		For nX := 1 To ( cTrab )->( FCount() )
 
 			cBuffer += ( cTrab )->( FieldName( nX ) )
@@ -570,7 +585,7 @@ Static Function Array2Csv()
 
 	If nHandle # -1
 
-		//-- Gera CabeÁalho do arquivo
+		//-- Gera Cabe√ßalho do arquivo
 		For nX := 1 To Len( aHeaders )
 
 			cBuffer += aHeaders[ nX ]
@@ -677,8 +692,8 @@ Return
 //	aAdd( aMultiBtn, { '<F3> Salvar'    , VK_F3, { || ExecF3() } } )
 //	aAdd( aMultiBtn, { '<F4> CSV'       , VK_F4, { || ExecF4() } } )
 //  aAdd( aMultiBtn, { '<F5> Executar'  , VK_F5, { || ExecF5( cMultiGet ) } } )
-//	aAdd( aMultiBtn, { '<F6> Par√¢metros', VK_F6, { || ExecF6() } } )
-//	aAdd( aMultiBtn, { '<F7> Hist√≥rico' , VK_F7, { || ExecF7() } } )
+//	aAdd( aMultiBtn, { '<F6> Par√É¬¢metros', VK_F6, { || ExecF6() } } )
+//	aAdd( aMultiBtn, { '<F7> Hist√É¬≥rico' , VK_F7, { || ExecF7() } } )
 //	aAdd( aMultiBtn, { '<F8> Script' , VK_F7, { || ExecF7() } } )
 
 //	End If
@@ -710,9 +725,9 @@ DEFAULT cTable	:= ""
 DEFAULT cCodigo := ""
 DEFAULT cLoja	:= ""
 
-If !Empty(cCodigo)
+	If !Empty(cCodigo)
 
-If oPreparC == nil
+		If oPreparC == nil
 cQuery 	:= "SELECT SUM(ABS(VALOR)) VLRX FROM "+ cTable +" "
 cQuery 	+= "WHERE CODIGO = ? AND"
 cQuery 	+= " LOJA = ? AND"
@@ -721,7 +736,7 @@ cQuery 	+= " DC = ? "
 
 cQuery 	:= ChangeQuery(cQuery)
 oPreparC:= FWPreparedStatement():New(cQuery)
-Endif
+		Endif
 
 oPreparC:SetString(1,cCodigo)
 oPreparC:SetString(2,cLoja)
@@ -731,7 +746,7 @@ cQuery := oPreparC:GetFixQuery()
 
 nValor := ABS(MpSysExecScalar(cQuery,"VLRX"))
 
-Endif
+	Endif
 
 Return nValor
 */
