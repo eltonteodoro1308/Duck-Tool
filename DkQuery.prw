@@ -241,7 +241,7 @@ Static Function ProcQuery( cQuery, cTipo )
 
 		If ! Empty( aQuery[ nX ] ) .And. SubStr( aQuery[nX], 1, 2 ) != '--'
 
-			cAux += aQuery[nX]
+			cAux += aQuery[nX] + CHR(13)+CHR(10)
 
 		End If
 
